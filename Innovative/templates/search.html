@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+	<div class="jumbotron">
+<h1> Identity Matcher</h1>
+</div>
+<div class="row">
+        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+            <a href={{ url_for('home') }}>
+              <button class="btn btn-success" style="margin-bottom: 10px; border-radius: 0;">Upload More</button>
+            </a>
+        </div>
+    </div>
+    <form method="POST" style="margin-bottom: 2em;">
+    <div>
+      <h4>
+    <label for="exampleInputPassword1">Identity Search</label><h4>
+    <input type="file" class="form-control" accept="image/*" id="exampleInputPassword1" name="imgsrc" placeholder="Upload Photo">
+  </div>
+          <center><br>
+          <button id="btn-submit" type="submit" class="btn btn-primary">
+            Search
+          </button>
+      </center>
+        </form>
+        {%if result_list %}
+        <h4> Query Image </h4>
+        <img src="{{url_for('static', filename=query_img)}}">
+        <br><br><br>
+        <h4>Top 2 Results</h4>
+        {% for i in range(result_list|length) %}
+        <h4>{{result_list[i]}}</h4>
+        {% endfor %}
+        {% endif %}
+</div>
+</body>
+</html>
