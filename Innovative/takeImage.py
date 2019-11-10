@@ -1,21 +1,8 @@
 import cv2
 import os
 import label_pickle as lp
-def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        pass
- 
-    try:
-        import unicodedata
-        unicodedata.numeric(s)
-        return True
-    except (TypeError, ValueError):
-        pass
- 
-    return False
+import shutil
+
 
 def TakeImages(Id,name):
     cam = cv2.VideoCapture(0)
@@ -24,7 +11,7 @@ def TakeImages(Id,name):
     sampleNum=0
     img_dir="testImage/"+name
     try:
-        os.rmdir(img_dir)
+        shutil.rmtree(img_dir)
     except:
     	pass
     os.mkdir(img_dir)
@@ -50,7 +37,8 @@ def TakeImages(Id,name):
             break
     cam.release()
     cv2.destroyAllWindows()
-    imgPath="testImage/features/"+name 
-    lp.generatePickle(imgPath)
+    # imgPath="testImage/features/"+name 
+    # lp.generatePickle(imgPath)
+
 def take_input():
 	TakeImages(178,"priyank")

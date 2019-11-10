@@ -36,14 +36,14 @@ def close_connection(exception):
 
 
 #CREATE MODEL
-fe = FeatureExtractor()
+# fe = FeatureExtractor()
 
 #CREATE ALL FEATURES DICTIONARY
 allFeatures={}
 for nameFolder in glob.glob("testImage/*"):
 	if(nameFolder!="testImage/features"):
 		name=nameFolder.split("/")[1]
-		allFeatures[name]=np.zeros((1,1000))
+		allFeatures[name]=np.zeros((1000,))
 
 for file in glob.glob("testImage/features/*"):
 	personName=(file.split("/")[2]).split(".")[0]
@@ -61,8 +61,8 @@ def home():
 		name = request.form['name']
 		mobile = request.form['phone']
 		ti.TakeImages(name,name)
-		cur=get_db().cursor()
 		try:
+			cur=get_db().cursor()
 			cur.execute('insert into candidate(email,name,mobile) values(?,?,?)',(email,name,int(mobile)))
 			get_db().commit()
 		except:
@@ -76,7 +76,7 @@ def search():
 	if searched:
 		imgPath = request.form['imgsrc']
 		img=selfscript.imagePreprocess(imgPath)
-		feature=fe.extract(img)
+		# feature=fe.extract(img)
 		result_dict=selfscript.comparePickle(feature,allFeatures)
 		clone_dict=result_dict.copy()
 		result_list=[]

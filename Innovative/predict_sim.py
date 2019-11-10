@@ -14,6 +14,7 @@ def imagePreprocess(imgPath):
 	x = image.img_to_array(img)
 	x = np.expand_dims(x, axis=0)
 	x = preprocess_input(x)
+	# x=x.reshape()
 	return x
 
 def defineModel():
@@ -23,9 +24,11 @@ def defineModel():
 
 def comparePickle(newImage,allFeatures):
 	resultDict={}
-
+	# newImage=np.reshape(newImage,(1,1000))
+	print("THIOS IS MY SHAPEEEE",newImage.shape)
 	for keys in allFeatures:
 		loaded_feature=allFeatures[keys]
+		# print(loaded_feature.shape)
 		cos_sim = np.dot(newImage,loaded_feature) / (np.linalg.norm(newImage) * np.linalg.norm(loaded_feature))		
 		resultDict[keys]=cos_sim
 	return resultDict

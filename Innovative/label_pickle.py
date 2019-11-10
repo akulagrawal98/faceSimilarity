@@ -8,6 +8,7 @@ from keras.models import Model,load_model
 import numpy as np
 import tensorflow as tf
 import glob
+from feature_extractor import FeatureExtractor
 
 def imagePreprocess(imgPath):
 	img=load_img(imgPath)
@@ -24,23 +25,33 @@ def defineModel():
 	return model1
 
 def generatePickle(personName):
-	path=personName+"/*"
+	print("THIS IS TH PERSONNANE",personName)
+	# featureModel=defineModel()
+	# obj=FeatureExtractor()
+	path="testImage/"+personName.split("/")[2]+"/*"
 	avg_feature=0
 	# (1,1000) length
 	file_count=0
-	sum_feature=np.zeros((1,1000))
+	sum_feature=np.zeros((1000,))
 	for file in glob.glob(path):
-		face1=imagePreprocess(file)		
-		feature1 = featureModel.predict(face1)[0][0][0]  # (1, 4096) -> (4096, )
+		face1=imagePreprocess(file)
+		print("BEFORE EXTRACTING!!!!!!!!!!!!!!!")
+		feature1=FeatureExtractor().extract(face1)
+		print("AFTER EXTRACTING!!!!!!!!!!!!!!!")
+		# feature1 = featureModel.predict(face1)[0][0][0]  # (1, 4096) -> (4096, )
 		feature1=feature1 / np.linalg.norm(feature1)
 		sum_feature=avg_feature+feature1
 		file_count+=1
+	print("NO OF FILE COUNT",file_count)
 	avg_feature=sum_feature/file_count
-	pickle_path=personName.split("/")[0]+"/features/"+personName.split("/")[1]+".pickle"
+	print(avg_feature.shape)
+	pickle_path=personName.split("/")[0]+"/features/"+personName.split("/")[2]+".pickle"
 	pickle_out = open(pickle_path,"wb")
 	pickle.dump(avg_feature, pickle_out)
 	pickle_out.close()
 	# print(avg_feature.shape)
+
+
 def createDumps(name):
 	featureModel=defineModel()
 	imgPath="testImage/*"
