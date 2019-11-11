@@ -15,6 +15,11 @@
   Enter correct Details
 </h3>
 {% endif %}
+{% if noerr %}
+<h3 style="color:green">
+  Successfully Registered
+</h3>
+{% endif %}
 <form method="POST" enctype="multipart/form-data">
   <div class="form-group">
     <label for="exampleInputEmail1">Email address</label>
@@ -28,11 +33,16 @@
   <div class="form-group">
     <label for="exampleCheck1">Phone Number</label>
     <input type="text" class="form-control" id="exampleCheck1" placeholder="Phone Number" name="phone">
-    
   </div>
-  
-  <!-- <button type="submit" class="btn btn-danger">Capture Images</button> -->
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+<br>
+<div class="row">
+<div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
+        <a href={{ url_for('search') }}>
+          <button class="btn btn-success" style="margin-bottom: 10px; border-radius: 0;">Search Images</button>
+        </a>
+    </div>
+</div>
 </body>
 </html>

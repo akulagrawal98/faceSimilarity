@@ -17,10 +17,9 @@
         </div>
     </div>
     <form method="POST" style="margin-bottom: 2em;">
-    <div>
-      <h4>
-    <label for="exampleInputPassword1">Identity Search</label><h4>
-    <input type="file" class="form-control" accept="image/*" id="exampleInputPassword1" name="imgsrc" placeholder="Upload Photo">
+    <div class="custom-file">
+      <label class="custom-file-label for="exampleInputPassword1"><center>Identity Search</center></label>
+    <input type="file" class="custom-file-input" accept="image/*" id="exampleInputPassword1" name="imgsrc" placeholder="Upload Photo">
   </div>
           <center><br>
           <button id="btn-submit" type="submit" class="btn btn-primary">
@@ -29,13 +28,33 @@
       </center>
         </form>
         {%if result_list %}
-        <h4> Query Image </h4>
+        <h3> Query Image </h3>
         <img src="{{url_for('static', filename=query_img)}}">
+        <!-- <img src="{{ query_img }}"> -->
         <br><br><br>
-        <h4>Top 2 Results</h4>
-        {% for i in range(result_list|length) %}
-        <h4>{{result_list[i]}}</h4>
-        {% endfor %}
+        <h3>Top 2 Results</h3>
+        <div class="row">
+        <div>
+          <table class="table table-bordered table-striped table-responsive">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email Id</th>
+            <th>Phone Number</th>
+            <th>Similarity</th>
+          </tr>
+        {% for i in range(detail_list|length) %}
+          <tr>
+            <th>{{i+1}}</th>
+            <th>{{detail_list[i][0][1]}}</th>
+            <th>{{detail_list[i][0][0]}}</th>
+            <th>{{detail_list[i][0][2]}}</th>
+            <th>{{similarity_list[i]}} %</th>
+          </tr>
+        {% endfor %}  
+        </table>
+        </div>
+        </div>
         {% endif %}
 </div>
 </body>

@@ -24,16 +24,16 @@ def defineModel():
 	model1 = Model(inputs=base_model.input, outputs=base_model.get_layer('conv_preds').output)
 	return model1
 
-def savePickle(featureModel,name):
-	personName=""
-	for i in range(1,len(name)):
-		print(name[i])
-		if(i!=1):
-			personName+=" "
-			personName+=name[i]
-		else:
-			personName+=name[i]
-	print(personName)
+def savePickle(personName,fe):
+	# personName=""
+	# for i in range(1,len(name)):
+	# 	print(name[i])
+	# 	if(i!=1):
+	# 		personName+=" "
+	# 		personName+=name[i]
+	# 	else:
+	# 		personName+=name[i]
+	# print(personName)
 	imgpath="testImage/"+personName+"/*"
 
 	avg_feature=0
@@ -44,9 +44,10 @@ def savePickle(featureModel,name):
 	for file in glob.glob(imgpath):
 		print(file)
 		face1=imagePreprocess(file)
-		feature1 = featureModel.predict(face1)[0][0][0]  # (1, 4096) -> (4096, )
-		feature1=feature1 / np.linalg.norm(feature1)
-		sum_feature=avg_feature+feature1
+		feature1=fe.extract(face1)
+		# feature1 = featureModel.predict(face1)[0][0][0]  # (1, 4096) -> (4096, )
+		# feature1=feature1 / np.linalg.norm(feature1)
+		sum_feature=sum_feature+feature1
 		file_count+=1
 	print(file_count)
 	print("NO OF FILE COUNT",file_count)
@@ -59,4 +60,20 @@ def savePickle(featureModel,name):
 
 if __name__ == '__main__':
 	featureModel=defineModel()
-	savePickle(featureModel,sys.argv)
+	
+	personName=""
+	name=sys.argv
+	for i in range(1,len(name)):
+		print(name[i])
+		if(i!=1):
+			personName+=" "
+			personName+=name[i]
+		else:
+			personName+=name[i]
+	# print(personName)
+
+	savePickle(featureModel,personName)
+
+def saveP(name,fe):
+	# featureModel=defineModel()
+	savePickle(name,fe)	

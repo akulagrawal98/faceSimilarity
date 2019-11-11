@@ -36,20 +36,22 @@ def close_connection(exception):
 
 
 #CREATE MODEL
-# fe = FeatureExtractor()
+fe = FeatureExtractor()
 
 #CREATE ALL FEATURES DICTIONARY
-allFeatures={}
-for nameFolder in glob.glob("testImage/*"):
-	if(nameFolder!="testImage/features"):
-		name=nameFolder.split("/")[1]
-		allFeatures[name]=np.zeros((1000,))
+def load_features():
+	allFeatures={}
+	for nameFolder in glob.glob("testImage/*"):
+		if(nameFolder!="testImage/features"):
+			name=nameFolder.split("/")[1]
+			allFeatures[name]=np.zeros((1000,))
 
-for file in glob.glob("testImage/features/*"):
-	personName=(file.split("/")[2]).split(".")[0]
-	pickle_in = open(file,"rb")
-	loaded_feature = pickle.load(pickle_in)
-	allFeatures[personName]=loaded_feature
+	for file in glob.glob("testImage/features/*"):
+		personName=(file.split("/")[2]).split(".")[0]
+		pickle_in = open(file,"rb")
+		loaded_feature = pickle.load(pickle_in)
+		allFeatures[personName]=loaded_feature
+	return allFeatures
 # print(len(allFeatures))
 
 
@@ -60,11 +62,12 @@ def home():
 		email = request.form['email']
 		name = request.form['name']
 		mobile = request.form['phone']
-		ti.TakeImages(name,name)
+		ti.TakeImages(1,name,fe)
 		try:
 			cur=get_db().cursor()
 			cur.execute('insert into candidate(email,name,mobile) values(?,?,?)',(email,name,int(mobile)))
 			get_db().commit()
+			return render_template("home.html",err=False)
 		except:
 			return render_template('home.html',file_error=True,detail_upload=True,err=True)
 		
@@ -76,27 +79,27 @@ def search():
 	if searched:
 		imgPath = request.form['imgsrc']
 		img=selfscript.imagePreprocess(imgPath)
-		# feature=fe.extract(img)
+		feature=fe.extract(img)
+		allFeatures=load_features()
 		result_dict=selfscript.comparePickle(feature,allFeatures)
 		clone_dict=result_dict.copy()
 		result_list=[]
-		for i in range(2):
+		detail_list=[]
+		cur=get_db().cursor()
+		print("I am clone DICT",clone_dict)
+		similarity_list=[]
+		for i in range(5):
 			similar=max(clone_dict.items(), key=operator.itemgetter(1))[0]
+			
+			similarity_list.append(round((clone_dict[similar]*100),2))
 			result_list.append(similar.capitalize())
 			clone_dict[similar]=0
-		print(result_list)
-		print(imgPath)
-		return render_template('search.html',file_error=True,result_list=result_list,query_img=imgPath)
+			# print("SIMILAR VALUE",similar)
+			detail = cur.execute('select * from candidate where name="{}"'.format(similar))
+			detail_list.append(detail.fetchall())
+			# print(detail.fetchall())
+		# print(result_list)
+		# print(imgPath)
+		print("THIS IS THE PATH",imgPath)
+		return render_template('search.html',similarity_list=similarity_list,file_error=True,result_list=result_list,query_img=imgPath,detail_list=detail_list)
 	return render_template('search.html',file_error=True)
-
-
-# @app.route('/image' , methods=['GET'])
-# def image():
-# 	ti.take_input()
-# 	return "OKAYYY"
-
-# <div class="col-lg-2 col-md-4 col-sm-6 col-xs-6">
-#       <a href={{ url_for('image') }}>Capture Images
-#         <button style="margin-bottom: 10px; border-radius: 0;">Capture Image</button>
-#       </a>
-#   </div>

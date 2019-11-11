@@ -1,10 +1,10 @@
 import cv2
 import os
-import label_pickle as lp
+# import label_pickle as lp
 import shutil
+import calPickle
 
-
-def TakeImages(Id,name):
+def TakeImages(Id,name,fe):
     cam = cv2.VideoCapture(0)
     harcascadePath = "haarcascade_frontalface_default.xml"
     detector=cv2.CascadeClassifier(harcascadePath)
@@ -25,7 +25,7 @@ def TakeImages(Id,name):
             #incrementing sample number 
             sampleNum=sampleNum+1
             #saving the captured face in the dataset folder TrainingImage
-            cv2.imwrite(img_dir+"/"+Id +'.'+ str(sampleNum) + ".jpg", gray[y:y+h,x:x+w])
+            cv2.imwrite(img_dir+"/"+str(Id) +'.'+ str(sampleNum) + ".jpg", gray[y:y+h,x:x+w])
             # print("CAPTURES!!!!!!!!!!!!!!!")
             #display the frame
             cv2.imshow('frame',img)
@@ -33,12 +33,12 @@ def TakeImages(Id,name):
         if cv2.waitKey(100) & 0xFF == ord('q'):
             break
         # break if the sample number is morethan 100
-        elif sampleNum>30:
+        elif sampleNum>60:
             break
     cam.release()
     cv2.destroyAllWindows()
     # imgPath="testImage/features/"+name 
-    # lp.generatePickle(imgPath)
+    calPickle.saveP(name,fe)
 
 def take_input():
 	TakeImages(178,"priyank")
